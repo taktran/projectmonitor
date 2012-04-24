@@ -117,26 +117,18 @@ class Project < ActiveRecord::Base
   end
 
   def tracker_project?
-    if tracker_project_id.blank? || tracker_auth_token.blank?
-      false
-    else
-      true
-    end
+    tracker_project_id.present? && tracker_auth_token.present?
   end
 
-  def tracker_project_healthy?
-    tracker_volatility <= 30 && tracker_num_unaccepted_stories < 6
+  def tracker_volatility_healthy?
+    tracker_volatility <= 30
+  end
+
+  def tracker_unaccepted_stories_healthy?
+    tracker_num_unaccepted_stories < 6
   end
 
   def self.standalone_with_tags(tags)
     standalone.find_tagged_with tags, match_all: true
   end
-
-  def update_tracker_status!
-    status = TrackerApi.new(tracker_auth_token).fetch_current_iteration(tracker_project_id)
-    self.tracker_num_unaccepted_stories = status["stories"].select do |i|
-      i["current_state"] == "unaccepted"
-    end.count
-  end
-
 end
