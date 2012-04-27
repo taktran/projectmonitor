@@ -56,6 +56,10 @@ module StatusFetcher
 
     tracker = TrackerApi.new(project.tracker_auth_token, project.tracker_project_id)
     project.tracker_num_unaccepted_stories = tracker.delivered_story_count
+
+    iterations_to_look_back = 10
+    velocities = tracker.previous_iterations_velocities(iterations_to_look_back)
+    project.tracker_standard_deviation = StandardDeviation.standard_deviation(velocities)
   end
 end
 

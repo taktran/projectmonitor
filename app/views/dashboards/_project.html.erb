@@ -9,6 +9,9 @@
       <div class="status-bar">
         <div class="publish-date"><%= project.time_since_last_build %></div>
         <% if project.tracker_project? %>
+          <div class="stddev">
+            <%= project.tracker_standard_deviation %>
+          </div>
           <div class="inventory">
             Inventory:
             <span class="<%= project.tracker_unaccepted_stories_healthy? ? "healthy" : "unhealthy" %>">

@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe TrackerApi do
   it 'can retrieve the velocities for previous iterations'do
-    PivotalTracker::Iteration.stub(:done).with(1234, offset: -2) do
+    project = stub(:project)
+    PivotalTracker::Project.stub(:find).with(1234) { project }
+    PivotalTracker::Iteration.stub(:done).with(project, offset: -2) do
       [
         stub(:iteration_1, stories: [stub(estimate: 1), stub(estimate: 2)]),
         stub(:iteration_2, stories: [stub(estimate: 3), stub(estimate: 4)])

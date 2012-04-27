@@ -155,11 +155,19 @@ describe StatusFetcher do
         before do
           TrackerApi.stub(:new).with(project.tracker_auth_token, project.tracker_project_id).and_return tracker_api
           tracker_api.stub(:delivered_story_count).and_return 7
+          tracker_api.stub(:previous_iterations_velocities).and_return [2, 4, 4, 4, 5, 5, 7, 9]
         end
 
         it "should set the project's tracker_num_unaccepted_stories to the number of delivered stories" do
           StatusFetcher.retrieve_tracker_status_for(project)
           project.tracker_num_unaccepted_stories.should == 7
+        end
+
+        it "should set the project's tracker_standard_deviation to the calculated standard deviation" do
+          # The standard deviation of [2, 4, 4, 4, 5, 5, 7, 9] is 2.0
+          # (According to Wikipedia.)
+          StatusFetcher.retrieve_tracker_status_for(project)
+          project.tracker_standard_deviation.should == 2.0
         end
       end
     end
