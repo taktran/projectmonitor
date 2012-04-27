@@ -54,8 +54,8 @@ module StatusFetcher
   def retrieve_tracker_status_for(project)
     return unless project.tracker_project?
 
-    tracker = TrackerApi.new(project.tracker_auth_token)
-    project.tracker_num_unaccepted_stories = tracker.delivered_story_count(project.tracker_project_id)
+    tracker = TrackerApi.new(project.tracker_auth_token, project.tracker_project_id)
+    project.tracker_num_unaccepted_stories = tracker.delivered_story_count
   end
 end
 
