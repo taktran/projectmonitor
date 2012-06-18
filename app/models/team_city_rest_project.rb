@@ -24,7 +24,10 @@ class TeamCityRestProject < Project
   def parse_project_status(content)
     status = super(content)
 
-    latest_build = Nokogiri::XML.parse(content).css('build').first
+    latest_build = Nokogiri::XML.parse(content).css('build').detect { |build|
+      build.attribute('running').try(:value) != 'true' || build.attribute('status').value != 'SUCCESS'
+    }
+
     status.success = latest_build.attribute('status').value == "SUCCESS"
     status.url = latest_build.attribute('webUrl').value
 

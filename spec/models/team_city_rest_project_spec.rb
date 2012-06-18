@@ -56,6 +56,22 @@ describe TeamCityRestProject do
 
     describe "#parse_project_status" do
 
+      describe "with a successful build still in progress" do
+        let(:xml) {
+          TeamcityRESTExample.new("build_in_progress_after_failure.xml").read
+        }
+        let(:parsed_status) {
+          project.parse_project_status(xml)
+        }
+
+        context "when the previous build is failing" do
+          it "takes the previous non-green-and-in-progress status from the XML" do
+            parsed_status.should_not be_success
+            parsed_status.url.should == Nokogiri::XML.parse(xml).css('build')[1].attribute('webUrl').value
+          end
+        end
+      end
+
       describe "with reported success" do
         let :status_parser do
           project.parse_project_status(TeamcityRESTExample.new("success.xml").read)
@@ -79,6 +95,7 @@ describe TeamCityRestProject do
             status_parser.published_at.should == @published_at
           end
         end
+
 
         context "there is a previous status for another build" do
           before do
