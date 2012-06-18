@@ -1,47 +1,135 @@
 .tiles_24 ol.projects {
   $information-width: 263px;
 
-  $success-font-size: 1.4em;
-  $success-line-height: 36px;
-  $success-padding-left: 6px;
-  $success-top: -38px;
+  $success-unicode-glyph: "\2022"; // unicode bullet
+  $failure-unicode-glyph: "\00D7"; // unicode 'x'
 
-  $failure-font-size: 1.3em;
-  $failure-line-height: -1px;
-  $failure-padding-left: 3px;
-  $failure-top: -36px;
+  $success-font-size: 2.5em;
+  $success-line-height: 25px;
+  $success-padding-left: 3px;
+  // $success-top: 100px;
 
-  $history-margin-vertical: 5px;
-  $history-margin-history: 2px;
+  $failure-font-size: 2.5em;
+  $failure-line-height: 21px;
+  $failure-padding-left: 1px;
+  // $failure-top: 100px;
 
-  $history-width: 24px;
-  $history-height: 24px;
+  $history-margin-horizontal: 8px;
+  $history-margin-vertical: 10px;
+  $history-margin-history: 2.5px;
 
-  $statusbar-font-size: 24px;
+  $history-width: 22px;
+  $history-height: 23px;
+
+  $statusbar-font-size: 30px;
+
   > li {
     @include grid(3);
   }
 
   li.project {
+    height: 192px;
     margin-top: 6px;
     margin-bottom: 6px;
-    height: 161px;
+
+    .history {
+      ol {
+        li {
+          display:block;
+          float:left;
+          width: $history-width;
+          height:$history-height;
+          margin: $history-margin-vertical $history-margin-history;
+          position: relative;
+        }
+
+        li.success:before {
+          content: $success-unicode-glyph;
+          font-size: $success-font-size;
+          line-height: $success-line-height;
+          padding-left: $success-padding-left;
+        }
+
+        li.failure:before {
+          content: $failure-unicode-glyph;
+          font-size: $failure-font-size;
+          line-height: $failure-line-height;
+          padding-left: $failure-padding-left;
+        }
+
+        a {
+          overflow: hidden;
+          font-size: 0;
+          display: block;
+          width: $history-width;
+          height: $history-height;
+        }
+      }
+    }
+
     .information {
       width: $information-width;
-
       h1 {
-        $height: 110px - 1;
+        $height: 142px - 1;
         height: $height;
-        padding: 0 15px;
-        line-height: $height;
-        font-size: 92px;
+        padding: 0px 15px;
+        line-height: 155px;
+        text-align: left;
+        font-size: 90px;
       }
 
       .status-bar {
-        padding: 0 15px;
-        height: 50px - 1;
-        line-height: 50px - 1;
-        font-size: 30px;
+        margin: 6px 0 0 0;
+        .building-indicator {
+          // margin: 0px 0 0 0;
+          float:left;
+          width:42px;
+          text-align:center;
+
+          img {
+            width:30px;
+            height:30px;
+          }
+        }
+
+        .publish-date {
+          font-family: 'Avenir LT W01 35 Light', Helvetica, sans-serif;
+          font-weight: normal;
+          float: left;
+          text-align: center;
+          font-size: 16px;
+          width: 28px;
+          padding: 0 $history-margin-horizontal;
+          margin: 12px 0 0 0;
+        }
+
+        .inventory {
+          .healthy {
+            color: green;
+          }
+
+          .unhealthy {
+            color: red;
+          }
+
+          float: right;
+          margin-right: 20px;
+          font-size: 10px;
+        }
+
+        .name {
+          font-family:'Avenir LT W01 55 Roman', Helvetica, sans-serif;
+          font-weight: normal;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          text-transform: capitalize;
+
+          a {
+            text-decoration: none;
+            color: black;
+          }
+        }
       }
     }
 
@@ -54,15 +142,26 @@
       }
 
       .sparklines {
-        margin: 95px 30px 5px;
-        width: (20px + 2 + 2) * 5;
+        margin: 100px 15px 5px;
+        width: 150px;
 
         .sparkline {
           a {
-            width: 20px;
-            height: 20px;
+            width: 26px;
+            height: 26px;
           }
 
+          &.success {
+            a {
+              background: url(/assets/icons/success_15.png) center no-repeat;
+            }
+          }
+
+          &.failure {
+            a {
+              background: url(/assets/icons/failure_15.png) center no-repeat;
+            }
+          }
         }
       }
     }

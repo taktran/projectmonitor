@@ -1,4 +1,6 @@
 @import "constants";
+@import "tiles_24";
+@import "tiles_15";
 
 @mixin building_animation_0($background_color) {
   opacity: 1;
@@ -81,26 +83,26 @@ ol.projects {
       height: 100%;
     }
 
-    .history {
-      ol {
-        li {
-          display:block;
-          float:left;
-          width: $history-width;
-          height:$history-height;
-          margin: $history-margin-vertical $history-margin-history;
-          position: relative;
-        }
+    // .history {
+      // ol {
+        // li {
+          // display:block;
+          // float:left;
+          // width: $history-width;
+          // height:$history-height;
+          // margin: $history-margin-vertical $history-margin-history;
+          // position: relative;
+        // }
 
-        a {
-          overflow: hidden;
-          font-size: 0;
-          display: block;
-          width: $history-width;
-          height: $history-height;
-        }
-      }
-    }
+        // a {
+          // overflow: hidden;
+          // font-size: 0;
+          // display: block;
+          // width: $history-width;
+          // height: $history-height;
+        // }
+      // }
+    // }
 
     &.success {
       background: $green;
@@ -254,6 +256,7 @@ ol.projects {
           font-weight: normal;
           float: left;
           text-align: center;
+          font-size:1px;
         }
 
         .inventory {
@@ -305,19 +308,19 @@ ol.projects {
           top: $failure-top;
         }
 
-        li.success:before {
-          content: $success-unicode-glyph;
-          font-size: $success-font-size;
-          line-height: $success-line-height;
-          padding-left: $success-padding-left;
-        }
+        // li.success:before {
+          // content: $success-unicode-glyph;
+          // font-size: $success-font-size;
+          // line-height: $success-line-height;
+          // padding-left: $success-padding-left;
+        // }
 
-        li.failure:before {
-          content: $failure-unicode-glyph;
-          font-size: $failure-font-size;
-          line-height: $failure-line-height;
-          padding-left: $failure-padding-left;
-        }
+        // li.failure:before {
+          // content: $failure-unicode-glyph;
+          // font-size: $failure-font-size;
+          // line-height: $failure-line-height;
+          // padding-left: $failure-padding-left;
+        // }
       }
     }
 
@@ -400,140 +403,140 @@ ol.projects {
   }
 }
 
-.tiles_15 ol.projects {
-  $information-width: 420px;
+// .tiles_15 ol.projects {
+  // $information-width: 420px;
 
-  > li {
-    @include grid(4);
-  }
+  // // > li {
+    // // @include grid(4);
+  // // }
 
-  li.project {
-    height: 192px;
-    margin-top: 6px;
-    margin-bottom: 6px;
-    .information {
-      width: $information-width;
+  // li.project {
+    // height: 192px;
+    // margin-top: 6px;
+    // margin-bottom: 6px;
+    // .information {
+      // width: $information-width;
 
-      h1 {
-        $height: 142px - 1;
-        height: $height;
-        padding: 0 15px;
-        line-height: $height;
-        font-size: 100px;
-      }
+      // h1 {
+        // $height: 142px - 1;
+        // height: $height;
+        // padding: 0 15px;
+        // line-height: $height;
+        // font-size: 100px;
+      // }
 
-      .status-bar {
-        height: 50px - 1;
-        line-height: 53px - 1;
-        font-size: 30px;
+      // .status-bar {
+        // height: 50px - 1;
+        // line-height: 53px - 1;
+        // font-size: 30px;
 
-        .publish-date {
-          width: 80px;
-          font-size: 24px;
-        }
-      }
-    }
+        // .publish-date {
+          // width: 80px;
+          // font-size: 24px;
+        // }
+      // }
+    // }
 
-    .velocity {
-      width: 180px;
-      .publish_date {
-        height: 150px;
-        font-size: 34pt;
-        line-height: 150px;
-      }
+    // .velocity {
+      // width: 180px;
+      // .publish_date {
+        // height: 150px;
+        // font-size: 34pt;
+        // line-height: 150px;
+      // }
 
-      .sparklines {
-        margin: 100px 15px 5px;
-        width: 150px;
+      // .sparklines {
+        // margin: 100px 15px 5px;
+        // width: 150px;
 
-        .sparkline {
-          a {
-            width: 26px;
-            height: 26px;
-          }
+        // .sparkline {
+          // a {
+            // width: 26px;
+            // height: 26px;
+          // }
 
-          &.success {
-            a {
-              background: url(/assets/icons/success_15.png) center no-repeat;
-            }
-          }
+          // &.success {
+            // a {
+              // background: url(/assets/icons/success_15.png) center no-repeat;
+            // }
+          // }
 
-          &.failure {
-            a {
-              background: url(/assets/icons/failure_15.png) center no-repeat;
-            }
-          }
-        }
-      }
-    }
+          // &.failure {
+            // a {
+              // background: url(/assets/icons/failure_15.png) center no-repeat;
+            // }
+          // }
+        // }
+      // }
+    // }
 
-    &.aggregate {
-      .information {
-        background-size: ($information-width/5.5);
-      }
-    }
-  }
-}
+    // &.aggregate {
+      // .information {
+        // background-size: ($information-width/5.5);
+      // }
+    // }
+  // }
+// }
 
-.tiles_24 ol.projects {
-  $information-width: 263px;
+// .tiles_24 ol.projects {
+  // $information-width: 263px;
 
-  > li {
-    @include grid(3);
-  }
+  // > li {
+    // @include grid(3);
+  // }
 
-  li.project {
-    margin-top: 6px;
-    margin-bottom: 6px;
-    height: 161px;
-    .information {
-      width: $information-width;
+  // li.project {
+    // margin-top: 6px;
+    // margin-bottom: 6px;
+    // height: 161px;
+    // .information {
+      // width: $information-width;
 
-      h1 {
-        $height: 110px - 1;
-        height: $height;
-        padding: 0 15px;
-        line-height: $height;
-        font-size: 92px;
-      }
+      // h1 {
+        // $height: 110px - 1;
+        // height: $height;
+        // padding: 0 15px;
+        // line-height: $height;
+        // font-size: 92px;
+      // }
 
-      .status-bar {
-        padding: 0 15px;
-        height: 50px - 1;
-        line-height: 50px - 1;
-        font-size: 30px;
-      }
-    }
+      // .status-bar {
+        // padding: 0 15px;
+        // height: 50px - 1;
+        // line-height: 50px - 1;
+        // font-size: 30px;
+      // }
+    // }
 
-    .velocity {
-      width: 180px;
-      .publish_date {
-        height: 150px;
-        font-size: 34pt;
-        line-height: 150px;
-      }
+    // .velocity {
+      // width: 180px;
+      // .publish_date {
+        // height: 150px;
+        // font-size: 34pt;
+        // line-height: 150px;
+      // }
 
-      .sparklines {
-        margin: 95px 30px 5px;
-        width: (20px + 2 + 2) * 5;
+      // .sparklines {
+        // margin: 95px 30px 5px;
+        // width: (20px + 2 + 2) * 5;
 
-        .sparkline {
-          a {
-            width: 20px;
-            height: 20px;
-          }
+        // .sparkline {
+          // a {
+            // width: 20px;
+            // height: 20px;
+          // }
 
-        }
-      }
-    }
+        // }
+      // }
+    // }
 
-    &.aggregate {
-      .information {
-        background-size: ($information-width/5.5);
-      }
-    }
-  }
-}
+    // &.aggregate {
+      // .information {
+        // background-size: ($information-width/5.5);
+      // }
+    // }
+  // }
+// }
 
 .tiles_48 ol.projects {
   $information-width: 190px;
