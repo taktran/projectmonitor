@@ -35,7 +35,6 @@ module StatusFetcher
       content = UrlRetriever.retrieve_content_at(project.feed_url, project.auth_username, project.auth_password)
       status = project.parse_project_status(content)
       status.online = true
-      binding.pry
       project.statuses.create(status.attributes) unless project.status.match?(status)
 
     rescue Net::HTTPError => e
