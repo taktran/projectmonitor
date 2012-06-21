@@ -9,11 +9,6 @@ class TeamCityChainedProject < TeamCityRestProject
     statuses.create(:error => error) unless status.error == error
   end
 
-  def parse_building_status
-    # TODO: implement me
-    raise NotImplementedError
-  end
-
   private
 
   def live_status
