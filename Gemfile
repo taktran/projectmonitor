@@ -55,6 +55,7 @@ group :development do
   gem "fog", "~> 1.3.1"
   gem "pivotal_git_scripts", "~> 1.1.4"
   gem "rails-erd"
+  gem "lobot"
 end
 
 group :test do

@@ -1,3 +1,4 @@
+load 'config/capistrano/ci'
 require 'capistrano/ext/multistage'
 require "rvm/capistrano"  # Use the gem, don't unshift RVM onto the load path, that's crazy.
 

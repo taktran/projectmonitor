@@ -14,9 +14,19 @@ execute "download jenkins" do
 end
 
 execute "download git plugin" do
-  command "mkdir -p #{CI_CONFIG["jenkins_dir"]}/plugins && curl -Lsf http://mirrors.jenkins-ci.org/plugins/git/latest/git.hpi -o #{CI_CONFIG["jenkins_dir"]}/plugins/git.hpi"
-  not_if { File.exists?("#{CI_CONFIG["jenkins_dir"]}/plugins/git.hpi") }
+  command "mkdir -p /home/#{username}/.jenkins/plugins && curl -Lsf http://mirrors.jenkins-ci.org/plugins/git/latest/git.hpi -o /home/#{username}/.jenkins/plugins/git.hpi"
+  not_if { File.exists?("/home/#{username}/.jenkins/plugins/git.hpi") }
   user username
+end
+
+execute "make project dir" do
+  command "mkdir -p /home/#{username}/.jenkins/jobs/#{ENV['APP_NAME']}"
+  user username
+end
+
+template "/home/#{username}/.jenkins/jobs/#{ENV['APP_NAME']}/config.xml" do
+  source "jenkins-job-config.xml.erb"
+  owner username
 end
 
 service_name = "jenkins"
