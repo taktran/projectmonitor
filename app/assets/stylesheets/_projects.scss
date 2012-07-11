@@ -126,6 +126,14 @@ ol.projects {
         background: $very-light-red;
         border-color: $very-dark-red;
 
+        ul {
+          padding: 8px;
+          li {
+            font-family: 'Avenir LT W01 85 Heavy', Helvetica, sans-serif;
+            list-style: none;
+          }
+        }
+
         .chart {
           dd {
             span {

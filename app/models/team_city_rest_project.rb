@@ -40,6 +40,17 @@ class TeamCityRestProject < Project
     "http://#{params["URL"]}/app/rest/builds?locator=running:all,buildType:(id:#{params["ID"]})"
   end
 
+  def find_build_breaker
+    if status_nodes.first.attributes["status"].value != "SUCCESS"
+      url = 'http://' + serialized_feed_url_parts["URL"]
+      Nokogiri::XML.parse(UrlRetriever.retrieve_content_at(url + status_nodes.first[:href], auth_username, auth_password)).css("changes").to_a.map{|a| a["href"]}.map do |a|
+        Nokogiri::XML.parse(UrlRetriever.retrieve_content_at(url + a, auth_username, auth_password)).css("change").to_a.map{ |change| change[:href] }.map do |a|
+          Nokogiri::XML.parse(UrlRetriever.retrieve_content_at(url + a, auth_username, auth_password)).css("change").to_a.map{ |change| change[:username] }
+        end
+      end.flatten.uniq
+    end
+  end
+
   protected
 
   def build_live_statuses

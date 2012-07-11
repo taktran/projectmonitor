@@ -37,6 +37,4 @@ module TeamCityBuildStatusParsing
       Clock.now.localtime
     end
   end
-
-
 end

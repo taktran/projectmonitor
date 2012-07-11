@@ -16,7 +16,7 @@
           <ol>
             <% project.recent_online_statuses(status_count_for(projects_count)).each do |status| %>
               <li class="<%= status.in_words %>">
-                <%= link_to status.in_words, status.url %>
+              <%= link_to status.in_words, status.url %>
               </li>
             <% end %>
           </ol>
@@ -25,14 +25,24 @@
     </div>
 
     <div class="velocity-block">
-      <% if project.tracker_project? %>
-        <div class="velocity">
-          <span class="label">Velocity</span>
-          <% unless project.last_ten_velocities.empty? %>
-            <span class="value"><%= project.current_velocity %></span>
-          <% end %>
-        </div>
-        <%= tracker_histogram project %>
+      <% if project.red? && project.is_a?(TeamCityRestProject) %>
+        <ul>
+        <% project.find_build_breaker.each do |breaker| %>
+          <li>
+          <%= breaker.titleize %>
+          </li>
+        <% end %>
+      </ul>
+      <% else %>
+        <% if project.tracker_project? %>
+          <div class="velocity">
+            <span class="label">Velocity</span>
+            <% unless project.last_ten_velocities.empty? %>
+              <span class="value"><%= project.current_velocity %></span>
+            <% end %>
+          </div>
+          <%= tracker_histogram project %>
+        <% end %>
       <% end %>
     </div>
   </li>
