@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120713162101) do
+ActiveRecord::Schema.define(:version => 20120713184831) do
 
   create_table "aggregate_projects", :force => true do |t|
     t.string   "name"
@@ -63,15 +63,6 @@ ActiveRecord::Schema.define(:version => 20120713162101) do
     t.datetime "next_poll_at"
     t.integer  "aggregate_project_id"
     t.integer  "deprecated_latest_status_id"
-    t.boolean  "ec2_monday"
-    t.boolean  "ec2_tuesday"
-    t.boolean  "ec2_wednesday"
-    t.boolean  "ec2_thursday"
-    t.boolean  "ec2_friday"
-    t.boolean  "ec2_saturday"
-    t.boolean  "ec2_sunday"
-    t.time     "ec2_start_time"
-    t.time     "ec2_end_time"
     t.string   "ec2_access_key_id"
     t.string   "ec2_secret_access_key"
     t.string   "ec2_instance_id"
