@@ -6,7 +6,6 @@
 *.ipr
 config/database.yml
 config/auth.yml
-config/ci.yml
 .bundle
 db/*.sqlite3
 log/*.log

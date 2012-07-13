@@ -46,10 +46,6 @@ end
 
 group :development do
   gem "heroku", "~> 2.23.0"
-  gem "capistrano", "~> 2.11.2"
-  gem "capistrano-ext", "~> 1.2.1"
-  gem "soloist", "~> 0.9.4"
-  gem "fog", "~> 1.3.1"
   gem "pivotal_git_scripts", "~> 1.1.4"
   gem "rails-erd"
 end
