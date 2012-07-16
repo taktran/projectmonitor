@@ -1,4 +1,6 @@
 class ProjectContentFetcher
+  attr_accessor :project
+
   delegate :feed_url, :build_status_url, :auth_username, :auth_password, to: :project
 
   def initialize(project)
@@ -6,20 +8,18 @@ class ProjectContentFetcher
   end
 
   def fetch
-    status_content = fetch_status if project.feed_url
-
-    if project.feed_url == project.build_status_url
-      status_content
+    if feed_url == build_status_url
+      content = fetch_status
+      { feed_content: content, build_status_content: content }
     else
-      building_status_content = fetch_building_status if project.build_status_url
-      [status_content, building_status_content]
+      { feed_content: fetch_status, build_status_content: fetch_building_status }
     end
   end
 
   private
 
   def fetch_status
-    content = UrlRetriever.retrieve_content_at(feed_url, auth_username, auth_password)
+    UrlRetriever.retrieve_content_at(feed_url, auth_username, auth_password)
   rescue Net::HTTPError => e
     error = "HTTP Error retrieving status for project '##{project.id}': #{e.message}"
     project.statuses.create(:error => error) unless project.status.error == error
@@ -27,11 +27,9 @@ class ProjectContentFetcher
   end
 
   def fetch_building_status
-    content = UrlRetriever.retrieve_content_at(build_status_url, auth_username, auth_password)
+    UrlRetriever.retrieve_content_at(build_status_url, auth_username, auth_password)
   rescue Net::HTTPError => e
     project.update_attribute(:building, false)
     nil
   end
-
-  attr_accessor :project
 end

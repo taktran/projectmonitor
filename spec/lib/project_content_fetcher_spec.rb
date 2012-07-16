@@ -1,118 +1,108 @@
 require 'spec_helper'
 
 describe ProjectContentFetcher do
-  let(:project) { TeamCityRestProject.create!(name: "my_team_city_rest_project", feed_url:  "http://foo.bar.com:3434/app/rest/builds?locator=running:all,buildType:(id:bt3)" ) }
   let(:project_content_fetcher) { ProjectContentFetcher.new(project) }
-  subject { project_content_fetcher.fetch }
-  describe "#fetch" do
-    context "when the project only has a feed_url" do
+
+  describe "fetch" do
+    subject { project_content_fetcher.fetch }
+
+    context "when the feed_url and build_status_url are the same" do
+      let(:project) { double :project, feed_url: :feed_url, build_status_url: :feed_url, auth_username: :username, auth_password: :password }
+      let(:content) { double :content }
+
       before do
-        UrlRetriever.stub(:retrieve_content_at)
+        UrlRetriever.should_receive(:retrieve_content_at).once.with(:feed_url, :username, :password).and_return(content)
       end
 
-      it "retrieves content using the feed_url" do
-        project_content_fetcher.should_receive :fetch_status
-        subject
+      it { should == { feed_content: content, build_status_content: content } }
+    end
+
+    context "when the feed_url and build_status_url are different" do
+      let(:project) { double :project, feed_url: :feed_url, build_status_url: :build_status_url, auth_username: :username, auth_password: :password }
+      let(:feed_content) { double :content }
+      let(:build_status_content) { double :content }
+
+      before do
+        UrlRetriever.should_receive(:retrieve_content_at).once.with(:feed_url, :username, :password).and_return(feed_content)
+        UrlRetriever.should_receive(:retrieve_content_at).once.with(:build_status_url, :username, :password).and_return(build_status_content)
       end
 
-      it "does not retrieve content using the build_status_url" do
-        project_content_fetcher.should_not_receive :fetch_building_status
-        subject
+      it { should == { feed_content: feed_content, build_status_content: build_status_content } }
+    end
+
+    context "when retrieving feed_url causes an HTTPError" do
+      let(:message) { "error" }
+
+      before do
+        UrlRetriever.should_receive(:retrieve_content_at).with(project.feed_url, project.auth_username, project.auth_password).and_raise Net::HTTPError.new(message, 500)
+        UrlRetriever.should_receive(:retrieve_content_at).with(project.build_status_url, project.auth_username, project.auth_password)
       end
 
-      context "and retrieving on feed_url causes HTTPError" do
-        let(:message) { "error" }
-        it "adds an error status" do
-          UrlRetriever.stub(:retrieve_content_at).and_raise Net::HTTPError.new(message, 500)
-          project.statuses.should_receive(:create).with(error: "HTTP Error retrieving status for project '##{project.id}': #{message}")
-          subject
-        end
-      end
+      context "when the project's current status is the same error" do
+        let(:project) { FactoryGirl.create :project }
 
-      context "project status can not be retrieved from remote source" do
-        let(:project_status) { double('project_status', error: "") }
         before do
-          UrlRetriever.stub(:retrieve_content_at).and_raise Net::HTTPError.new("can't do it", 500)
-          project.stub(:status).and_return project_status
+          project.statuses.create :error => "HTTP Error retrieving status for project '##{project.id}': error"
+        end
+
+        it "should not add an error" do
+          expect { subject }.not_to change(ProjectStatus, :count)
+        end
+
+        it "should set the feed_content to nil" do
+          subject[:feed_content].should be_nil
+        end
+      end
+
+      context "when the project's current status isn't an error" do
+        let(:project) { FactoryGirl.create :project }
+
+        before do
+          project.statuses.create success: true
+        end
+
+        it "should add an error status" do
           subject
+          project.reload.statuses.first.error.should == "HTTP Error retrieving status for project '##{project.id}': #{message}"
         end
 
-        context "a status does not exist with the error that is returned" do
-          before do
-            project_status.stub(:error).and_return "another error"
-          end
+        it "should set the feed_content to nil" do
+          subject[:feed_content].should be_nil
+        end
+      end
 
-          it "creates a status with the error message" do
-            project.statuses.should_receive(:create)
-            StatusFetcher.retrieve_status_for(project)
-            subject
-          end
+      context "when the project's current status is a different error" do
+        let(:project) { FactoryGirl.create :project }
+
+        before do
+          project.statuses.create :error => "some error"
         end
 
-        context "a status exists with the error that is returned" do
-          before do
-            project_status.stub(:error).and_return "HTTP Error retrieving status for project '##{project.id}': can't do it"
-          end
+        it "should add an error status" do
+          subject
+          project.reload.statuses.first.error.should == "HTTP Error retrieving status for project '##{project.id}': #{message}"
+        end
 
-          it "does not create a duplicate status" do
-            project.statuses.should_not_receive(:create)
-            StatusFetcher.retrieve_status_for(project)
-            subject
-          end
+        it "should set the feed_content to nil" do
+          subject[:feed_content].should be_nil
         end
       end
     end
 
-    context "when the project has a feed_url and a build_status_url" do
-      let(:project) { JenkinsProject.create!(:name => "my_jenkins_project", :feed_url => "http://foo.bar.com:3434/job/example_project/rssAll") }
-      let(:build_url) {"http://foo.com"}
+    context "when retrieving build_status_url causes an HTTPError" do
+      let(:project) { FactoryGirl.create :project, building: true }
+
       before do
-        UrlRetriever.stub(:retrieve_content_at)
-        project.stub(:build_status_url).and_return(build_url)
+        UrlRetriever.should_receive(:retrieve_content_at).with(project.feed_url, project.auth_username, project.auth_password)
+        UrlRetriever.should_receive(:retrieve_content_at).with(project.build_status_url, project.auth_username, project.auth_password).and_raise Net::HTTPError.new("error", 500)
       end
 
-      it "retrieves content using the feed_url" do
-        project_content_fetcher.should_receive :fetch_status
-        subject
+      it "should update the project's building status to false" do
+        expect { subject }.to change(project, :building).from(true).to(false)
       end
 
-      it "retrieves content using the build_status_url" do
-        project_content_fetcher.should_receive :fetch_building_status
-        subject
-      end
-
-      it "combines the content from both urls" do
-        project_content_fetcher.stub(:fetch_status) { 1 }
-        project_content_fetcher.stub(:fetch_building_status) { 2 }
-        subject.should == [1,2]
-      end
-
-      describe "#retrieve_status_for" do
-        let(:content) { double(:content) }
-        let(:building_status) { false }
-        let(:status) { double(:status, :building? => building_status )}
-
-        subject do
-          project.building
-        end
-
-        context "project status can be retrieved from the remote source" do
-          before do
-            UrlRetriever.stub(:retrieve_content_at)
-            StatusFetcher.retrieve_status_for project
-          end
-
-          it { should == building_status }
-        end
-
-        context "project status can not be retrieved" do
-          before do
-            UrlRetriever.stub(:retrieve_content_at).and_raise Net::HTTPError.new("can't do it", 500)
-            StatusFetcher.retrieve_status_for project
-          end
-
-          it { should be_false }
-        end
+      it "should set the build_status_content to nil" do
+        subject[:build_status_content].should be_nil
       end
     end
   end
