@@ -1,4 +1,3 @@
-
 class CruiseControlProject < Project
   validates_format_of :feed_url, :with => /https?:\/\/.*\.rss$/, :message => 'should end with ".rss"'
 
