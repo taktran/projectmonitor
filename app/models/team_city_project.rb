@@ -20,11 +20,11 @@ class TeamCityProject < Project
     feed_url
   end
 
-  def payload
-    LegacyTeamCityPayload
+  def fetch_payload
+    LegacyTeamCityXmlPayload
   end
 
-  def payload_fetch_format
-    :xml
+  def webhook_payload
+    LegacyTeamCityXmlPayload
   end
 end

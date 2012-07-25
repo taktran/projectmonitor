@@ -22,11 +22,11 @@ class CruiseControlProject < Project
     end.join
   end
 
-  def payload
-    CruiseControlPayload
+  def fetch_payload
+    CruiseControlXmlPayload
   end
 
-  def payload_fetch_format
-    :xml
+  def webhook_payload
+    CruiseControlXmlPayload
   end
 end

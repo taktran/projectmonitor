@@ -6,7 +6,7 @@ describe ProjectContentFetcher do
   let(:project_content_fetcher) { ProjectContentFetcher.new(project) }
 
   before do
-    Payload.stub(for_project: payload)
+    # Payload.stub(for_project: payload)
     UrlRetriever.stub(:retrieve_content_at).and_return("foo", "bar")
     project.stub(feed_url: "foo", auth_username: nil, auth_password: nil)
   end
