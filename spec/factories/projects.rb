@@ -24,12 +24,6 @@ FactoryGirl.define do
     cruise_control_rss_feed_url "http://www.example.com/project.rss"
   end
 
-  factory :team_city_project, class: TeamCityProject do
-    name { Faker::Name.name }
-    team_city_base_url "foo.bar.com:1234"
-    team_city_build_id "bt567"
-  end
-
   factory :team_city_rest_project, class: TeamCityRestProject do
     name { Faker::Name.name }
     team_city_rest_base_url "example.com"

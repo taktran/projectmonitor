@@ -442,12 +442,6 @@ describe Project do
       it { should =~ ['jenkins_base_url', 'jenkins_build_name'] }
     end
 
-    context "when a TeamCityProject" do
-      let(:project_class) { TeamCityProject }
-
-      it { should =~ ['team_city_base_url', 'team_city_build_id'] }
-    end
-
     context "when a TeamCityRestProject" do
       let(:project_class) { TeamCityRestProject }
 

@@ -9,7 +9,6 @@ describe ProjectsHelper do
                  ['Cruise Control Project', 'CruiseControlProject'],
                  ['Jenkins Project', 'JenkinsProject'],
                  ['Team City Rest Project', 'TeamCityRestProject'],
-                 ['Team City Project', 'TeamCityProject'],
                  ['Team City Chained Project', 'TeamCityChainedProject'],
                  ['Travis Project', 'TravisProject']]
     end
