@@ -4,7 +4,7 @@ describe TrackerProjectValidator do
   describe "validate" do
     let(:params) { {auth_token: auth_token, project_id: project_id} }
 
-    subject { TrackerProjectValidator.validate params }
+    subject { TrackerProjectValidator::Job.new(params).perform }
 
     context "with a valid token and valid project id" do
       let(:auth_token) { '881c7bc3264a00d280225ea409225fe8' }
@@ -48,6 +48,16 @@ describe TrackerProjectValidator do
       end
 
       it { should == :unauthorized }
+    end
+
+    describe "enqueuing a delayed job" do
+      let(:auth_token) { '881c7bc3264a00d280225ea409225fe8' }
+      let(:project_id) { '590337' }
+
+      it "should enqueue a job" do
+        Delayed::Job.should_receive(:enqueue).with(TrackerProjectValidator::Job.new params)
+        TrackerProjectValidator.validate(params)
+      end
     end
   end
 end

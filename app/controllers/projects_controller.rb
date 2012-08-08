@@ -54,6 +54,7 @@ class ProjectsController < ApplicationController
 
   def validate_tracker_project
     status = TrackerProjectValidator.validate(params)
+    Delayed::Job.enqueue TrackerProjectValidator::Job.new params
     head status
   end
 
