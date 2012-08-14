@@ -4,8 +4,6 @@ module StatusFetcher
       retrieve_status
       retrieve_velocity
 
-      project.set_next_poll
-      project.save!
     end
 
     private
@@ -17,6 +15,19 @@ module StatusFetcher
     def retrieve_velocity
       StatusFetcher.retrieve_velocity_for(project)
     end
+
+    def success
+      project.set_next_poll
+      project.save!
+    end
+
+    def error
+      #write something to the logs
+      project.backoff_time += 1
+      project.set_next_poll(project.backoff_time)
+      project.save!
+    end
+
   end
 
   class << self

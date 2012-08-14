@@ -1,18 +1,42 @@
 require 'spec_helper'
 
 describe StatusFetcher::Job do
-  describe "#perform" do
+  describe "#perform", :vcr => {:re_record_interval => 6.months} do
     let(:project) { double(:project) }
 
     it "retrieves statuses from the StatusFetcher" do
       StatusFetcher.should_receive(:retrieve_status_for).with project
       StatusFetcher.should_receive(:retrieve_velocity_for).with project
-      project.should_receive(:set_next_poll)
-      project.should_receive(:save!)
 
       StatusFetcher::Job.new(project).perform
     end
 
+    describe "retrieves backoff time from project" do
+      context "when there is a next_poll_at" do
+        let!(:project) { FactoryGirl.create(:jenkins_project, next_poll_at: 1.day.from_now, backoff_time: 0) }
+        it "successful" do
+
+          project.should_receive(:set_next_poll)
+          project.should_receive(:save!)
+
+
+          StatusFetcher::Job.new(project).send(:success)
+          project.backoff_time.should == 0
+        end
+
+        it "error" do
+          next_poll_at = project.next_poll_at
+
+          project.should_receive(:set_next_poll).with(project.backoff_time)
+
+          StatusFetcher::Job.new(project).send(:error)
+          (project.next_poll_at - (next_poll_at + project.backoff_time)).abs.should == 1
+        end
+      end
+      context "when there is no next_poll_at" do
+
+      end
+    end
   end
 end
 
@@ -90,9 +114,9 @@ describe StatusFetcher do
 
       it "should do nothing" do
         project.should_not_receive :current_velocity=
-        project.should_not_receive :last_ten_velocities=
+          project.should_not_receive :last_ten_velocities=
 
-        StatusFetcher.retrieve_velocity_for(project)
+          StatusFetcher.retrieve_velocity_for(project)
       end
     end
   end

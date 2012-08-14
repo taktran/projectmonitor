@@ -355,21 +355,37 @@ describe Project do
 
   describe "#set_next_poll" do
     epsilon = 2
-    context "with a project poll interval set" do
-      before do
-        project.polling_interval = 25
+    context "old tests" do
+      context "with a project poll interval set" do
+        before do
+          project.polling_interval = 25
+        end
+
+        it "should set the next_poll_at to Time.now + the project poll interval" do
+          project.set_next_poll
+          (project.next_poll_at - (Time.now + project.polling_interval)).abs.should <= epsilon
+        end
+
+        it "should set an incremental value for backoff_time" do
+          project.set_next_poll
+          project.next_poll_at - (Time.now + project.polling_interval + backoff_time + incremental_time)
+        end
       end
 
-      it "should set the next_poll_at to Time.now + the project poll interval" do
-        project.set_next_poll
-        (project.next_poll_at - (Time.now + project.polling_interval)).abs.should <= epsilon
+      context "without a project poll interval set" do
+        it "should set the next_poll_at to Time.now + the system default interval" do
+          project.set_next_poll
+          (project.next_poll_at - (Time.now + Project::DEFAULT_POLLING_INTERVAL)).abs.should <= epsilon
+        end
       end
     end
 
-    context "without a project poll interval set" do
-      it "should set the next_poll_at to Time.now + the system default interval" do
-        project.set_next_poll
-        (project.next_poll_at - (Time.now + Project::DEFAULT_POLLING_INTERVAL)).abs.should <= epsilon
+    context "backoff time" do
+      let(:project) { FactoryGirl.create(:jenkins_project) }
+      it "sets next poll to accept backofftime" do
+        backoff_time = 20
+        project.set_next_poll(backoff_time)
+        (project.next_poll_at - (Time.now + backoff_time + Project::DEFAULT_POLLING_INTERVAL)).abs.should <= epsilon
       end
     end
   end

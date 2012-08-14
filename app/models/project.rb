@@ -103,8 +103,8 @@ class Project < ActiveRecord::Base
     name
   end
 
-  def set_next_poll
-    self.next_poll_at = Time.now + (polling_interval || Project::DEFAULT_POLLING_INTERVAL)
+  def set_next_poll(backoff_time=0)
+    self.next_poll_at = Time.now + (polling_interval || Project::DEFAULT_POLLING_INTERVAL) + backoff_time
   end
 
   def building?
