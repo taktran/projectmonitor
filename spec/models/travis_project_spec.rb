@@ -39,7 +39,6 @@ describe TravisProject do
       let(:project) { FactoryGirl.build(:travis_project) }
 
     it { should == 'http://travis-ci.org/account/project' }
-    end
   end
 
 end
