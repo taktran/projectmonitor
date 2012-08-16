@@ -5,12 +5,14 @@ class StatusController < ApplicationController
     project = Project.find_by_guid(params.delete(:project_id))
 
     payload = project.webhook_payload
-    payload.webhook_status_content = request.body.read
+    # NOTE: This throws parse errors, which will appropriately cause this
+    # action to 500 if failing, because who cares if an automated process
+    # returns a 500 if it submits us with bad data? Don't waste any more cycles
+    # caring
+    payload.parse_webhook_content request.body.read
 
-    log = PayloadProcessor.new(project, payload).process
-    log.method = "webhooks"
-    log.save!
-
+    PayloadProcessor.process(project, payload)
+	log.method = "webhooks"
     project.save!
     head :ok
   end

@@ -1,27 +1,15 @@
 class SemaphorePayload < Payload
 
-  def convert_content!(content)
-    [JSON.parse(content)]
-  rescue => e
-    log_error(e)
-    self.processable = self.build_processable = false
-    []
-  end
+  def parse_polled_content(content)
+    build_status_json = JSON.parse(content)
 
-  def parse_success(content)
-    content['result'] == 'passed'
-  end
+    @build_statuses = [OpenStruct.new(
+      success: build_status_json['result'] == 'passed',
+      url: build_status_json['build_url'],
+      build_id: build_status_json['build_number'],
+      published_at: Time.parse(build_status_json['finished_at']))]
 
-  def parse_url(content)
-    parsed_url = content['build_url']
-  end
-
-  def parse_build_id(content)
-    content['build_number']
-  end
-
-  def parse_published_at(content)
-    Time.parse(content['finished_at'])
+    true
   end
 
 end

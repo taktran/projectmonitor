@@ -1,9 +1,26 @@
 require 'spec_helper'
 
-describe SemaphorePayload do
+describe TravisPayload do
 
-  # let(:status_content) { SemaphoreExample.new(json).read }
-  # let(:payload) { SemaphorePayload.new.tap{|p| p.status_content = status_content} }
+  # let(:payload) { TravisPayload.new }
+
+  # context 'when a success payload is parsed' do
+
+    # let(:success_content) { File.read('spec/fixtures/travis_examples/success.json') }
+
+    # before do
+      # payload.parse_polled_content(success_content)
+    # end
+
+    # subject { payload }
+
+    # its(:building) { should be_false }
+    # its(:build_statuses) { size should == 1 }
+
+  # end
+
+  # let(:status_content) { TravisExample.new(json).read }
+  # let(:payload) { TravisJsonPayload.new.tap{|p| p.status_content = status_content} }
   # let(:content) { payload.status_content.first }
   # let(:json) { "success.json" }
 
@@ -26,6 +43,20 @@ describe SemaphorePayload do
 
       # it 'should be marked as unprocessable' do
         # payload.processable.should be_false
+        # payload.build_processable.should be_false
+      # end
+    # end
+  # end
+
+  # describe '#convert_webhook_content!' do
+    # context 'when supplied with an empty payload' do
+      # before do
+        # Rack::Utils.stub(:parse_nested_query).and_return({})
+      # end
+
+      # it 'provides an empty string to JSON.parse' do
+        # JSON.should_receive(:parse).with('')
+        # TravisJsonPayload.new.convert_webhook_content!(status_content)
       # end
     # end
   # end
@@ -46,17 +77,16 @@ describe SemaphorePayload do
   # describe '#parse_url' do
     # subject { payload.parse_url(content) }
 
-    # it { should == 'https://semaphoreapp.com/projects/123/branches/456/builds/1' }
+    # it { should be_nil }
   # end
 
   # describe '#parse_build_id' do
     # subject { payload.parse_build_id(content) }
-    # it { should == 1 }
+    # it { should == 1879979 }
   # end
 
   # describe '#parse_published_at' do
     # subject { payload.parse_published_at(content) }
-    # it { should == Time.new(2012, 8, 16, 2, 16, 46, "-07:00") }
+    # it { should == Time.utc(2012, 7, 16, 19, 36, 22) }
   # end
-
 end

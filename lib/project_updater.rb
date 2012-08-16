@@ -6,7 +6,7 @@ module ProjectUpdater
       update_status(project)
     end
 
-  private
+    private
 
     def update_status(project)
       payload = project.fetch_payload
