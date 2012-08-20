@@ -5,7 +5,7 @@ describe StatusController do
     context "Travis project" do
       let!(:project) { FactoryGirl.create(:travis_project) }
       let(:payload) do
-      '{
+        '{
          "id":1885645,
          "number":"75",
          "status":1,
@@ -89,19 +89,19 @@ describe StatusController do
     context "TeamCity Rest project" do
       let!(:project) { FactoryGirl.create(:team_city_rest_project) }
       let(:payload) do
-       {"buildStatus"=>"Running", "buildResult"=>"success", "notifyType"=>"buildFinished",
-       "buildRunner"=>"Command Line",
-       "buildFullName"=>"projectmonitor_ci_test_teamcity :: projectmonitor_ci_test_teamcity",
-       "buildName"=>"projectmonitor_ci_test_teamcity",
-       "buildId"=>"13", "buildTypeId"=>"bt2",
-       "projectName"=>"projectmonitor_ci_test_teamcity",
-       "projectId"=>"project2", "buildNumber"=>"13",
-       "agentName"=>"Default Agent",
-       "agentOs"=>"Linux, version 2.6.18-xenU-ec2-v1.5",
-       "agentHostname"=>"localhost",
-       "triggeredBy"=>"ci",
-       "message"=>"Build projectmonitor_ci_test_teamcity :: projectmonitor_ci_test_teamcity has finished.  This is build number 13, has a status of \"Running\" and was triggered by ci",
-       "text"=>"projectmonitor_ci_test_teamcity :: projectmonitor_ci_test_teamcity has finished. Status: Running"}
+        {"buildStatus"=>"Running", "buildResult"=>"success", "notifyType"=>"buildFinished",
+         "buildRunner"=>"Command Line",
+         "buildFullName"=>"projectmonitor_ci_test_teamcity :: projectmonitor_ci_test_teamcity",
+         "buildName"=>"projectmonitor_ci_test_teamcity",
+         "buildId"=>"13", "buildTypeId"=>"bt2",
+         "projectName"=>"projectmonitor_ci_test_teamcity",
+         "projectId"=>"project2", "buildNumber"=>"13",
+         "agentName"=>"Default Agent",
+         "agentOs"=>"Linux, version 2.6.18-xenU-ec2-v1.5",
+         "agentHostname"=>"localhost",
+         "triggeredBy"=>"ci",
+         "message"=>"Build projectmonitor_ci_test_teamcity :: projectmonitor_ci_test_teamcity has finished.  This is build number 13, has a status of \"Running\" and was triggered by ci",
+         "text"=>"projectmonitor_ci_test_teamcity :: projectmonitor_ci_test_teamcity has finished. Status: Running"}
       end
 
       subject { post :create, {project_id: project.guid, "build" => payload} }
@@ -169,4 +169,19 @@ describe StatusController do
 
     end
   end
+
+  describe "escaping special characters" do
+    let!(:project) { FactoryGirl.create(:project) }
+    let(:payload) do
+      '{"name":"projectmonitor_ci_test",
+        "url":"job/projectmonitor_ci_test/",
+        "build":{"number":7,"phase":"STARTED","url":"job/projec&&tmonitor_ci_test/7/"}}'
+    end
+
+    it "should escape &" do
+      post :create, project_id: project.guid, payload: payload
+      ProjectStatus.last.url.should == "job/projec&amp;&amp;tmonitor_ci_test/7/"
+    end
+  end
+
 end

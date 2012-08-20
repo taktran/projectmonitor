@@ -5,7 +5,8 @@ class StatusController < ApplicationController
     project = Project.find_by_guid(params.delete(:project_id))
 
     payload = project.webhook_payload
-    payload.webhook_status_content = request.body.read
+    debugger
+    payload.webhook_status_content = CGI::escapeHTML(request.body.read)
 
     PayloadProcessor.new(project, payload).process
 
