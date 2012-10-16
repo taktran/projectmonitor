@@ -1,12 +1,14 @@
 class Project < ActiveRecord::Base
 
+  STATUSES_MAX = 16
   RECENT_STATUS_COUNT = 8
   DEFAULT_POLLING_INTERVAL = 30
 
   has_many :statuses,
     class_name: "ProjectStatus",
     dependent: :destroy,
-    before_add: :update_refreshed_at
+    before_add: :update_refreshed_at,
+    after_add: :remove_outdated_status
   has_many :payload_log_entries
 
   belongs_to :aggregate_project
@@ -38,7 +40,8 @@ class Project < ActiveRecord::Base
   attr_accessible :aggregate_project_id,
     :code, :name, :enabled, :polling_interval, :type, :tag_list, :online, :building,
     :auth_password, :auth_username, :tracker_auth_token, :tracker_project_id, :tracker_online,
-    :webhooks_enabled, :notification_email, :send_error_notifications, :send_build_notifications
+    :webhooks_enabled, :notification_email, :send_error_notifications, :send_build_notifications,
+    :verify_ssl
 
   def self.project_specific_attributes
     columns.map(&:name).grep(/#{project_attribute_prefix}_/)
@@ -176,8 +179,11 @@ class Project < ActiveRecord::Base
     self.last_refreshed_at = Time.now if online?
   end
 
+  def remove_outdated_status(status)
+    statuses.first.destroy if statuses.count == STATUSES_MAX
+  end
+
   def fetch_statuses
     Delayed::Job.enqueue(StatusFetcher::Job.new(self), priority: 0)
   end
-
 end
