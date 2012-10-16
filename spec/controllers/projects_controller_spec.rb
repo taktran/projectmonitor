@@ -111,7 +111,6 @@ describe ProjectsController do
             let(:new_password) { 'new_password' }
           end
         end
-
       end
 
       describe "changing STI type" do
