@@ -1,0 +1,31 @@
+@import "constants";
+
+ol.services {
+  list-style: none;
+  display: block;
+
+  li.service {
+    float: left;
+    width: 128px;
+    height: 32px;
+
+    > div {
+      height: 100%;
+    }
+
+    &.success {
+      background: $light-green;
+      border: $green;
+    }
+
+    &.failure {
+      background: $light-red;
+      border: $red;
+    }
+
+    &.offline {
+      background: $very-light-grey;
+      border: $light-grey;
+    }
+  }
+}

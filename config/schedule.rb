@@ -10,3 +10,4 @@ end
 every :weekday, :at => '8:30am' do
   rake "cimonitor:red_over_one_day_notification", :output => "log/red_notify.log"
 end
+

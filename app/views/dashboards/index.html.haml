@@ -1,3 +1,11 @@
 %ol.projects
   = render @tiles, tiles_count: @tiles_count
   .clear
+%ol.services
+  - ['Github'].each do |service|
+    %li{css: css_labeservice_status}
+  %li{css: service_status()}.service
+    .success
+    .information
+      %h1 Github
+  .clear
