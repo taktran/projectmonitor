@@ -58,4 +58,6 @@ describe ProjectStatus do
       status.in_words.should == 'failure'
     end
   end
+
+
 end

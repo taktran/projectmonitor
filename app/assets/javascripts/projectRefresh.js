@@ -1,5 +1,8 @@
 var ProjectRefresh = (function () {
-  var projectSelectors, tilesCount, pollIntervalSeconds = 30, fadeIntervalSeconds = 3, timeoutFunction;
+
+  var tilesCount = 15,
+    fadeIntervalSeconds = 3, 
+    faye;
 
   function showAsBuilding (projectSelector) {
     var $projectEl = $(projectSelector);
@@ -15,47 +18,22 @@ var ProjectRefresh = (function () {
 
   return {
     init : function () {
-      projectSelectors = $.map($('.project'), function(projectElement) {
-        return '#' + $(projectElement).attr('id');
-      });
       tilesCount = parseInt($('body').data('tiles-count'), 10);
 
       $('li.building').each(function (i, li) {
         showAsBuilding(li);
       });
 
-      timeoutFunction = setTimeout(this.refresh, pollIntervalSeconds * 1000);
-    },
-
-    refresh : function () {
-      $.each(projectSelectors, function(i, projectSelector) {
-        var $projectEl = $(projectSelector),
-            project_id = $projectEl.data('id'),
-            project_type = $projectEl.hasClass('aggregate') ? 'aggregate_project' : 'project';
-
-        $.ajax({
-          url: '/' + project_type + 's/' + project_id + '/status',
-          dataType: 'html',
-          data: {
-            tiles_count: tilesCount
-          },
-          timeout: (pollIntervalSeconds - 1) * 1000,
-          success: function(response) {
-            $projectEl = $projectEl.replaceWith(response);
-            if ($projectEl.hasClass('building')) {
-              showAsBuilding(projectSelector);
-            }
-          },
-          error: function() {
-            $projectEl.addClass('server-unreachable');
+      faye = new Faye.Client('http://localhost:9292/faye');
+      $.map($('.project'), function(projectElement) {
+        var id = $(projectElement).data('id');
+        faye.subscribe('/projects/' + id, function (data) {
+          $projectEl = $('#project_' + id).replaceWith(data);
+          if ($projectEl.hasClass('building')) {
+            showAsBuilding(projectSelector);
           }
         });
       });
-      timeoutFunction = setTimeout(ProjectRefresh.refresh, pollIntervalSeconds * 1000);
-    },
-
-    cleanupTimeout : function() {
-      clearTimeout(timeoutFunction);
     }
   };
 })();

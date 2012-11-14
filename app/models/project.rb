@@ -7,7 +7,7 @@ class Project < ActiveRecord::Base
     class_name: "ProjectStatus",
     dependent: :destroy,
     before_add: :update_refreshed_at,
-    after_add: :remove_outdated_status
+    after_add: [:remove_outdated_status, :broadcast_update]
   has_many :payload_log_entries
 
   belongs_to :aggregate_project
@@ -32,6 +32,7 @@ class Project < ActiveRecord::Base
   validates :name, presence: true
   validates :type, presence: true
 
+  after_save :broadcast_update
   before_save :check_next_poll
   after_create :fetch_statuses
   before_create :generate_guid
@@ -166,6 +167,28 @@ class Project < ActiveRecord::Base
 
   def generate_guid
     self.guid = SecureRandom.uuid
+  end
+
+  protected
+
+  def broadcast_update(status=nil)
+    # TODO: Ask Jeff about refactoring spec to not use FactoryGirl
+    if id? # Make sure this is actually a saved Project
+      # Don't need to look at status - just send full partial
+      ac = ProjectsController.new
+      message = {
+        :channel => Rails.application.routes.url_helpers.project_path(self),
+        :data => ac.render_to_string(
+          :partial => 'dashboards/project', 
+          :locals => {
+            :project => ProjectDecorator.new(self),
+            :tiles_count => 15
+          }
+        )
+      }
+      uri = URI.parse("http://127.0.0.1:9292/faye")
+      Net::HTTP.post_form(uri, message: message.to_json)
+    end
   end
 
   private

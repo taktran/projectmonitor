@@ -39,5 +39,4 @@ class ProjectStatus < ActiveRecord::Base
       'failure'
     end
   end
-
 end

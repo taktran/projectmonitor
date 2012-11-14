@@ -21,8 +21,21 @@ describe Project do
       project.statuses = FactoryGirl.create_list(:project_status, count)
     end
 
+    context 'when the project is offline' do
+      let(:project) { FactoryGirl.build(:jenkins_project) }
+
+      it 'should not set the last_refreshed_at' do
+        project.last_refreshed_at.should be_nil
+      end
+    end
+
     context 'when the project is online' do
-      let(:project) { FactoryGirl.build(:jenkins_project).tap {|p| p.online = true } }
+      let(:project) {
+        JenkinsProject.create name: 'Test Project',
+          jenkins_base_url: "http://www.example.com",
+          jenkins_build_name: "project",
+          online: true
+      }
 
       it 'should set the last_refreshed_at' do
         project.last_refreshed_at.should be_present
@@ -50,11 +63,23 @@ describe Project do
         end
       end
 
-      context 'when the project is offline' do
-        let(:project) { FactoryGirl.build(:jenkins_project) }
+      context "when the project has changed" do
+        let(:project) { FactoryGirl.create(:jenkins_project) }
 
-        it 'should not set the last_refreshed_at' do
-          project.last_refreshed_at.should be_nil
+        it "broadcasts the partial to the projects channel" do
+          Net::HTTP.should_receive(:post_form)
+          project.update_attributes name: "Other Names"
+        end
+      end
+
+      context "when a project status has changed" do
+        let(:project) { FactoryGirl.create(:jenkins_project) }
+
+        it "broadcasts the partial to the projects channel" do
+          uri = URI.parse("http://127.0.0.1:9292/faye")
+          Net::HTTP.should_receive(:post_form).with(uri, message: include("\"channel\":\"/projects/#{project.id}\""))
+
+          project.statuses.create build_id: 102
         end
       end
     end
