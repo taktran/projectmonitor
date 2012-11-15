@@ -15,6 +15,8 @@ class Project < ActiveRecord::Base
   serialize :last_ten_velocities, Array
   serialize :tracker_validation_status, Hash
 
+  serialize :new_relic_response_times, Array
+
   scope :enabled, where(:enabled => true)
   scope :standalone, enabled.where(:aggregate_project_id => nil)
   scope :with_statuses, joins(:statuses).uniq
@@ -40,7 +42,7 @@ class Project < ActiveRecord::Base
     :code, :name, :enabled, :polling_interval, :type, :tag_list, :online, :building,
     :auth_password, :auth_username, :tracker_auth_token, :tracker_project_id, :tracker_online,
     :webhooks_enabled, :notification_email, :send_error_notifications, :send_build_notifications,
-    :verify_ssl
+    :verify_ssl, :new_relic_account_id, :new_relic_api_key, :new_relic_app_id
 
   def self.project_specific_attributes
     columns.map(&:name).grep(/#{project_attribute_prefix}_/)
@@ -143,6 +145,10 @@ class Project < ActiveRecord::Base
 
   def tracker_project?
     tracker_project_id.present? && tracker_auth_token.present?
+  end
+
+  def new_relic_project?
+    new_relic_account_id.present? && new_relic_api_key.present? && new_relic_app_id.present?
   end
 
   def payload

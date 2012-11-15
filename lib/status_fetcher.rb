@@ -3,6 +3,7 @@ module StatusFetcher
     def perform
       retrieve_status
       retrieve_velocity
+      retrieve_third_party_data
 
       project.set_next_poll
       project.save!
@@ -16,6 +17,10 @@ module StatusFetcher
 
     def retrieve_velocity
       StatusFetcher.retrieve_velocity_for(project)
+    end
+
+    def retrieve_third_party_data
+      StatusFetcher.retrieve_new_relic_data_for(project)
     end
   end
 
@@ -39,6 +44,16 @@ module StatusFetcher
       project.tracker_online = true
     rescue RestClient::Exception
       project.tracker_online = false
+    end
+
+    def retrieve_new_relic_data_for(project)
+      return unless project.new_relic_project?
+
+      new_relic = NewRelicProjectApi.new(project)
+      project.new_relic_response_times = new_relic.average_response_time
+      project.new_relic_online = true
+    rescue RestClient::Exception
+      project.new_relic_online = false
     end
   end
 end

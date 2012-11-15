@@ -81,6 +81,21 @@ describe 'UrlRetriever' do
       end
     end
 
+    context "with headers" do
+      let(:stubbed_response) { stub(:code => '200', :body => 'mock body') }
+      let(:request_headers) { {"x-api-key" => "api_key"} }
+      let(:http_get) { stub('HTTP::Get stub') }
+
+      before do
+        http_get.should_receive(:[]=).with('x-api-key', 'api_key')
+        Net::HTTP.stub!(:new).and_return(stub('Net::HTTP stub', :[] => nil, :code => '200', :read_timeout= => nil, :open_timeout= => nil, :start => stubbed_response).as_null_object)
+        Net::HTTP::Get.should_receive(:new).with('/path.html?parameter=value').and_return(http_get)
+      end
+
+      subject { UrlRetriever.retrieve_content_at('http://host/path.html?parameter=value', nil, nil, false, request_headers) }
+
+      it { should == 'mock body' }
+    end
   end
 
   describe '#prepend_scheme' do

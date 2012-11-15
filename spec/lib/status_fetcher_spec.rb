@@ -7,6 +7,7 @@ describe StatusFetcher::Job do
     it "retrieves statuses from the StatusFetcher" do
       StatusFetcher.should_receive(:retrieve_status_for).with project
       StatusFetcher.should_receive(:retrieve_velocity_for).with project
+      StatusFetcher.should_receive(:retrieve_new_relic_data_for).with project
       project.should_receive(:set_next_poll)
       project.should_receive(:save!)
 
@@ -93,6 +94,51 @@ describe StatusFetcher do
         project.should_not_receive :last_ten_velocities=
 
         StatusFetcher.retrieve_velocity_for(project)
+      end
+    end
+  end
+
+  describe "#retrieve_new_relic_data_for" do
+    context "when the project is a new_relic_project?" do
+      let(:project) { FactoryGirl.create :project, new_relic_api_key: "api_key", new_relic_account_id: "account_id", new_relic_app_id: "app_id" }
+      let(:new_relic_response_times) { [1,2,3,4,5,6,7,8,9,10] }
+
+      let(:new_relic_api) { double :new_relic_api, :average_response_time => new_relic_response_times }
+
+      before do
+        NewRelicProjectApi.stub(:new).and_return new_relic_api
+      end
+
+      it "should set the new_relic_response_times on the project" do
+        StatusFetcher.retrieve_new_relic_data_for(project)
+        project.new_relic_response_times.should == new_relic_response_times
+      end
+
+      it "should set the online status to true" do
+        project.new_relic_online.should == nil
+        StatusFetcher.retrieve_new_relic_data_for(project)
+        project.new_relic_online.should == true
+      end
+
+      context "when a connection failure occurs" do
+        before do
+          new_relic_api.stub(:average_response_time).and_raise(RestClient::Unauthorized)
+        end
+
+        it "should set the online status to false" do
+          StatusFetcher.retrieve_new_relic_data_for(project)
+          project.new_relic_online.should == false
+        end
+      end
+    end
+
+    context "when the project is not a new_relic_project?" do
+      let(:project) { FactoryGirl.create :project }
+
+      it "should do nothing" do
+        project.should_not_receive :new_relic_response_times=
+
+        StatusFetcher.retrieve_new_relic_data_for(project)
       end
     end
   end

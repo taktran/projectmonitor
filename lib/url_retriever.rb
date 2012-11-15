@@ -5,14 +5,14 @@ module UrlRetriever
 
   class << self
 
-    def retrieve_content_at(url, username = nil, password = nil, verify_ssl = true)
+    def retrieve_content_at(url, username = nil, password = nil, verify_ssl = true, request_headers = nil)
       if username.present? && password.present?
-        response = do_get(url, verify_ssl) { |get| get.basic_auth(username, password) }
+        response = do_get(url, verify_ssl, request_headers) { |get| get.basic_auth(username, password) }
         if response['www-authenticate'].present?
-          response = do_get(url, verify_ssl) { |get| digest_auth(get, response, username, password) }
+          response = do_get(url, verify_ssl, request_headers) { |get| digest_auth(get, response, username, password) }
         end
       else
-        response = do_get(url, verify_ssl)
+        response = do_get(url, verify_ssl, request_headers)
       end
       if response.code.to_i == 200
         response.body
@@ -44,10 +44,12 @@ module UrlRetriever
       end
     end
 
-    def do_get(url, verify_ssl)
+    def do_get(url, verify_ssl, request_headers)
 
       uri = URI.parse(prepend_scheme(url))
       get = Net::HTTP::Get.new("#{uri.path}?#{uri.query}")
+
+      request_headers.each { |key, value| get[key] = value } if request_headers
 
       yield(get) if block_given?
       response = http(uri, verify_ssl).start { |web| web.request(get) }

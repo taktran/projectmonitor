@@ -231,6 +231,38 @@ describe Project do
     end
   end
 
+  describe "new_relic_integration" do
+    let(:project) { Project.new }
+
+    describe "#new_relic_project?" do
+      it "should return true if the project has a new_relic_account_id and a new_relic_app_id and a new_relic_api_key" do
+        project.new_relic_account_id = double(:new_relic_account_id)
+        project.new_relic_api_key = double(:new_relic_api_key)
+        project.new_relic_app_id = double(:new_relic_app_id)
+        project.new_relic_project?.should be(true)
+      end
+
+      it "should return false if the project has a blank new_relic_account_id AND a blank new_relic_api_key AND a blank_new_relic_app_id" do
+        project.new_relic_account_id = ""
+        project.new_relic_api_key = ""
+        project.new_relic_app_id = ""
+        project.new_relic_project?.should be(false)
+      end
+
+      it "should return false if the project doesn't have new_relic_account_id" do
+        project.new_relic_project?.should be(false)
+      end
+
+      it "should return false if the project doesn't have new_relic_api_key" do
+        project.new_relic_project?.should be(false)
+      end
+
+      it "should return false if the project doesn't have new_relic_app_id" do
+        project.new_relic_project?.should be(false)
+      end
+    end
+  end
+
   describe "#red?, #green? and #yellow?" do
     subject { project }
 

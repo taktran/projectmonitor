@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.newrelic.com/api/v1/accounts/214658/applications/1395343/data.json?metrics[]=Controller/application/broadcast&field=average_response_time&begin=2012-11-15T02:05:45-05:00&end=2012-11-15T02:20:45-05:00
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      accept:
+      - ! '*/*'
+      user-agent:
+      - Ruby
+      x-api-key:
+      - 4b7dd24681d52b565c3c5001d31ff0167e840f50dcb4fa6
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - NewRelic/0.8.53
+      date:
+      - Thu, 15 Nov 2012 22:27:37 GMT
+      content-type:
+      - application/json; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      x-runtime:
+      - '52'
+      etag:
+      - ! '"ed02f1620302619f60a87d441360d619"'
+      cache-control:
+      - private, max-age=0, must-revalidate
+      content-length:
+      - '2611'
+    body:
+      encoding: US-ASCII
+      string: ! '[{"name":"Controller/application/broadcast","begin":"2012-11-15T07:05:00Z","end":"2012-11-15T07:06:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:06:00Z","end":"2012-11-15T07:07:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:07:00Z","end":"2012-11-15T07:08:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:08:00Z","end":"2012-11-15T07:09:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:09:00Z","end":"2012-11-15T07:10:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:10:00Z","end":"2012-11-15T07:11:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:11:00Z","end":"2012-11-15T07:12:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:12:00Z","end":"2012-11-15T07:13:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:13:00Z","end":"2012-11-15T07:14:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:14:00Z","end":"2012-11-15T07:15:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:15:00Z","end":"2012-11-15T07:16:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:16:00Z","end":"2012-11-15T07:17:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:17:00Z","end":"2012-11-15T07:18:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:18:00Z","end":"2012-11-15T07:19:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0},{"name":"Controller/application/broadcast","begin":"2012-11-15T07:19:00Z","end":"2012-11-15T07:20:00Z","app":"My
+        Application","agent_id":1395343,"average_response_time":0.0}]'
+    http_version: '1.1'
+  recorded_at: Thu, 15 Nov 2012 22:27:45 GMT
+recorded_with: VCR 2.2.4

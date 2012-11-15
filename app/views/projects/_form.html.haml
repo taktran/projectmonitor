@@ -120,6 +120,21 @@
       %span.pending.hide &nbsp;
       %span.unconfigured.hide Unconfigured
       %span.failure.hide
+%hr
+%fieldset#new_relic_setup
+  %h3 New Relic Setup
+  %p
+    = f.label :new_relic_account_id, "New Relic Account Id"
+    = f.text_field :new_relic_account_id
+
+  %p
+    = f.label :new_relic_api_key, "New Relic API Key"
+    = f.text_field :new_relic_api_key
+
+  %p
+    = f.label :new_relic_app_id, "New Relic App Id"
+    = f.text_field :new_relic_app_id
+
 %p
   %em
     Server time is #{Time.now}

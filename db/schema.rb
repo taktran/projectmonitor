@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121109165401) do
+ActiveRecord::Schema.define(:version => 20121115204028) do
 
   create_table "aggregate_projects", :force => true do |t|
     t.string   "name"
@@ -108,6 +108,11 @@ ActiveRecord::Schema.define(:version => 20121109165401) do
     t.boolean  "verify_ssl",                                 :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "new_relic_api_key"
+    t.string   "new_relic_app_id"
+    t.string   "new_relic_account_id"
+    t.boolean  "new_relic_online"
+    t.string   "new_relic_response_times"
   end
 
   add_index "projects", ["aggregate_project_id"], :name => "index_projects_on_aggregate_project_id"
