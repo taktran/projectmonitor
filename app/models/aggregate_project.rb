@@ -1,7 +1,10 @@
 class AggregateProject < ActiveRecord::Base
-  has_many :projects
+  has_many :projects,
+    after_add: :broadcast_update
 
   before_destroy { |record| record.projects.update_all :aggregate_project_id => nil }
+
+  after_save :broadcast_update
 
   scope :enabled, where(enabled: true)
   scope :with_statuses, joins(:projects => :statuses).uniq
@@ -13,6 +16,10 @@ class AggregateProject < ActiveRecord::Base
 
   acts_as_taggable
   validates :name, presence: true
+
+  def broadcast_update(project=nil)
+    ProjectBroadcaster::broadcast_update self
+  end
 
   def self.all_with_tags(tags)
     enabled.joins(:projects).find_tagged_with tags, match_all: true

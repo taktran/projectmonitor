@@ -66,8 +66,8 @@ describe Project do
       context "when the project has changed" do
         let(:project) { FactoryGirl.create(:jenkins_project) }
 
-        it "broadcasts the partial to the projects channel" do
-          Net::HTTP.should_receive(:post_form)
+        it "broadcasts the partial to the project's channel" do
+          project.should_receive(:broadcast_update)
           project.update_attributes name: "Other Names"
         end
       end
@@ -76,9 +76,7 @@ describe Project do
         let(:project) { FactoryGirl.create(:jenkins_project) }
 
         it "broadcasts the partial to the projects channel" do
-          uri = URI.parse("http://127.0.0.1:9292/faye")
-          Net::HTTP.should_receive(:post_form).with(uri, message: include("\"channel\":\"/projects/#{project.id}\""))
-
+          project.should_receive(:broadcast_update)
           project.statuses.create build_id: 102
         end
       end

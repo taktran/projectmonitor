@@ -172,23 +172,7 @@ class Project < ActiveRecord::Base
   protected
 
   def broadcast_update(status=nil)
-    # TODO: Ask Jeff about refactoring spec to not use FactoryGirl
-    if id? # Make sure this is actually a saved Project
-      # Don't need to look at status - just send full partial
-      ac = ProjectsController.new
-      message = {
-        :channel => Rails.application.routes.url_helpers.project_path(self),
-        :data => ac.render_to_string(
-          :partial => 'dashboards/project', 
-          :locals => {
-            :project => ProjectDecorator.new(self),
-            :tiles_count => 15
-          }
-        )
-      }
-      uri = URI.parse("http://127.0.0.1:9292/faye")
-      Net::HTTP.post_form(uri, message: message.to_json)
-    end
+    ProjectBroadcaster::broadcast_update self
   end
 
   private
