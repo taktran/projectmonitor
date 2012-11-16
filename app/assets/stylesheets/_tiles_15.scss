@@ -153,6 +153,10 @@
         margin-top: 23px;
       }
 
+      .new_relic {
+        height: 192px;
+      }
+
       .label {
         font-size: 1.3em;
       }
@@ -173,7 +177,7 @@
         line-height: 150px;
       }
 
-      .chart {
+      .velocity_chart .chart {
         padding-top: 53px;
 
         dd {
@@ -182,6 +186,22 @@
 
           span {
             width: 14px;
+          }
+        }
+      }
+      .new_relic_chart
+      {
+        .chart {
+          padding-top: 53px;
+          padding-left: 5px;
+
+          dd {
+            height: 118px;
+            width: 9px;
+
+            span {
+              width: 9px;
+            }
           }
         }
       }

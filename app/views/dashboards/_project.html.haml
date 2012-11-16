@@ -6,13 +6,24 @@
       .history
         = build_history project, tiles_count
   .velocity-block
-    - if project.tracker_project?
-      - if project.tracker_online?
-        .velocity
-          %span.label Velocity
-          - unless project.last_ten_velocities.empty?
-            %span.value= project.current_velocity
-        = tracker_histogram project
+    -# - if project.tracker_project?
+      -# - if project.tracker_online?
+        -# .velocity
+          -# %span.label Velocity
+          -# - unless project.last_ten_velocities.empty?
+            -# %span.value= project.current_velocity
+        -# .velocity_chart
+          -# = tracker_histogram project
+      -# - else
+        -# .error
+          -# No Connection
+    - if project.new_relic_project?
+      - if project.new_relic_online?
+        .new_relic
+          %span.label New Relic
+          .new_relic_chart
+            = new_relic_histogram project
       - else
         .error
+          %span.label New Relic
           No Connection

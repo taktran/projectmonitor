@@ -20,6 +20,16 @@ module DashboardHelper
     end.html_safe
   end
 
+  def new_relic_histogram(project)
+    new_relic_histogram = NewRelicHistogram.new(project.new_relic_response_times)
+
+    content_tag(:dl, class: "chart") do
+      new_relic_histogram.each_bar do |bar|
+        concat new_relic_histogram_bar(bar.height_percentage, bar.points_value)
+      end
+    end.html_safe
+  end
+
   def status_count_for(number)
     case number
     when 15, 24
@@ -49,6 +59,11 @@ module DashboardHelper
     end
   end
 
+  def new_relic_histogram_bar(percentage, points_value)
+    content_tag(:dd, :title => "#{points_value} ms") do
+      concat tag(:span, style: "height: #{percentage}%")
+    end
+  end
 end
 
 

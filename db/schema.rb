@@ -112,7 +112,7 @@ ActiveRecord::Schema.define(:version => 20121115204028) do
     t.string   "new_relic_app_id"
     t.string   "new_relic_account_id"
     t.boolean  "new_relic_online"
-    t.string   "new_relic_response_times"
+    t.text     "new_relic_response_times"
   end
 
   add_index "projects", ["aggregate_project_id"], :name => "index_projects_on_aggregate_project_id"

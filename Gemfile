@@ -25,7 +25,11 @@ gem "pivotal-tracker"
 gem "rails"
 gem "rake"
 gem "xpath"
-gem 'whenever', :require => false
+gem "whenever", :require => false
+
+#REMOVE ME
+gem "newrelic_rpm"
+#REMOVE ME
 
 group :production do
   gem "therubyracer"

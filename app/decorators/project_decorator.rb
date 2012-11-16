@@ -1,6 +1,7 @@
 class ProjectDecorator < ApplicationDecorator
 
   delegate :to_s, :to => :model
+  delegate :new_relic_response_times, :to => :model
 
   def as_json(options = {})
     model.as_json(only: :id, methods: :tag_list)

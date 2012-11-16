@@ -18,6 +18,7 @@ namespace :cimonitor do
       begin
         StatusFetcher.retrieve_status_for(project)
         StatusFetcher.retrieve_velocity_for(project)
+        StatusFetcher.retrieve_new_relic_data_for(project)
         project.save!
       rescue => e
         puts "Failed to update project '#{project}', #{e.class}: #{e.message}"

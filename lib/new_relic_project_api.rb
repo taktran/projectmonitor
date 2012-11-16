@@ -15,7 +15,7 @@ class NewRelicProjectApi
   private
 
   def build_url
-    "#{base_url}#{@account}/applications/#{@app_id}/data.json?metrics[]=Controller/application/broadcast&field=average_response_time&begin=#{begin_time}&end=#{end_time}"
+    "#{base_url}#{@account}/applications/#{@app_id}/data.json?metrics[]=Agent/MetricsReported/count&field=average_response_time&begin=#{begin_time}&end=#{end_time}"
   end
 
   def base_url
@@ -27,7 +27,7 @@ class NewRelicProjectApi
   end
 
   def end_time
-    Time.now.to_datetime.to_s
+    Time.zone.now.to_datetime.to_s
   end
 
   def handle_response(response)
