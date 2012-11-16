@@ -6,24 +6,21 @@ module ProjectBroadcaster
       project_decorator = ProjectDecorator.new(project)
 
       channel = if project.is_a?(AggregateProject)
-                  "/refresh/aggregate_project_#{project.id}"
+                  "aggregate_project_#{project.id}"
                 else
-                  "/refresh/project_#{project.id}"
+                  "project_#{project.id}"
                 end
 
-      message = {
-        channel: channel,
-        data: ac.render_to_string(
-          partial: project.to_partial_path,
-          locals: {
-            aggregate_project: project_decorator,
-            project: project_decorator,
-            tiles_count: 15
-          }
-        )
-      }
-      uri = URI.parse "http://127.0.0.1:9292/faye"
-      Net::HTTP.post_form(uri, message: message.to_json)
+      message = ac.render_to_string(
+        partial: project.to_partial_path,
+        locals: {
+          aggregate_project: project_decorator,
+          project: project_decorator,
+          tiles_count: 15
+        }
+      )
+
+      Pusher[channel].trigger('projectUpdate', message)
 
       # Broadcast the update to the aggregate project if it exists
       if project.is_a?(Project) && !project.aggregate_project.nil?

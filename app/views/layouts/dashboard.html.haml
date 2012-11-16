@@ -4,7 +4,7 @@
     %title Project Monitor
     = stylesheet_link_tag "dashboard"
     %script{:src => "http://fast.fonts.com/jsapi/14aea2b8-37b7-4a31-afb9-e44414bef419.js", :type => "text/javascript"}
-    %script{:src => "http://localhost:9292/faye.js", :type => "text/javascript"}
+    %script{:type => "text/javascript", :src  => "http://js.pusher.com/1.12/pusher.min.js"}
   %body{:class => "dashboard tiles_#{@tiles_count}", "data-tiles-count" => @tiles_count}
     = yield
     #footer

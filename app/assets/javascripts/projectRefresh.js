@@ -1,8 +1,7 @@
 var ProjectRefresh = (function () {
 
   var tilesCount = 15,
-    fadeIntervalSeconds = 10,
-    faye;
+    fadeIntervalSeconds = 10;
 
   function showAsBuilding (projectSelector) {
     var $projectEl = $(projectSelector);
@@ -20,7 +19,7 @@ var ProjectRefresh = (function () {
     updateTile: function(channel, data) {
       $projectEl = $('#' + channel).replaceWith(data);
       if($projectEl.hasClass('building')) {
-        showAsBuilding(projectSelector);
+        showAsBuilding($projectEl);
       }
     },
     init: function () {
@@ -30,17 +29,17 @@ var ProjectRefresh = (function () {
         showAsBuilding(li);
       });
 
-      faye = new Faye.Client('http://localhost:9292/faye');
+      var pusher = new Pusher('976b441544d083882cc4');
       $.map($('.project'), function(projectElement) {
         var id = $(projectElement).data('id');
         var projectType = 'project';
         if($(projectElement).hasClass('aggregate')) {
           projectType = 'aggregate_project';
         }
-        var channel = projectType + "_" + id;
-        faye.subscribe("/refresh/" + channel, function (data) {
-          alert(data);
-          ProjectRefresh.updateTile(channel, data);
+        var channel = pusher.subscribe(projectType + "_" + id);
+        channel.bind('projectUpdate', function(data) {
+          console.log(channel.name, data);
+          ProjectRefresh.updateTile(channel.name, data);
         });
       });
     }
