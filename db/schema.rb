@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121109165401) do
+ActiveRecord::Schema.define(:version => 20121115220406) do
 
   create_table "aggregate_projects", :force => true do |t|
     t.string   "name"
@@ -68,8 +68,8 @@ ActiveRecord::Schema.define(:version => 20121109165401) do
     t.string   "deprecated_feed_url"
     t.string   "auth_username"
     t.string   "auth_password"
-    t.boolean  "enabled",                                    :default => true
-    t.boolean  "building",                                   :default => false, :null => false
+    t.boolean  "enabled",                                                                  :default => true
+    t.boolean  "building",                                                                 :default => false, :null => false
     t.string   "type"
     t.integer  "polling_interval"
     t.datetime "next_poll_at"
@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(:version => 20121109165401) do
     t.string   "deprecated_location",          :limit => 20
     t.string   "tracker_project_id"
     t.string   "tracker_auth_token"
-    t.integer  "current_velocity",                           :default => 0,     :null => false
+    t.integer  "current_velocity",                                                         :default => 0,     :null => false
     t.string   "last_ten_velocities"
     t.boolean  "tracker_online"
     t.string   "cruise_control_rss_feed_url"
@@ -91,9 +91,9 @@ ActiveRecord::Schema.define(:version => 20121109165401) do
     t.string   "team_city_rest_build_type_id"
     t.string   "travis_github_account"
     t.string   "travis_repository"
-    t.boolean  "online",                                     :default => false
-    t.boolean  "has_failing_children",                       :default => false, :null => false
-    t.boolean  "has_building_children",                      :default => false, :null => false
+    t.boolean  "online",                                                                   :default => false
+    t.boolean  "has_failing_children",                                                     :default => false, :null => false
+    t.boolean  "has_building_children",                                                    :default => false, :null => false
     t.string   "guid"
     t.boolean  "webhooks_enabled"
     t.string   "tracker_validation_status"
@@ -105,9 +105,17 @@ ActiveRecord::Schema.define(:version => 20121109165401) do
     t.string   "notification_email"
     t.boolean  "send_build_notifications"
     t.boolean  "send_error_notifications"
-    t.boolean  "verify_ssl",                                 :default => true
+    t.boolean  "verify_ssl",                                                               :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "new_relic_account_id"
+    t.string   "new_relic_application_id"
+    t.string   "new_relic_api_token"
+    t.string   "average_responses"
+    t.string   "code_climate_api_token"
+    t.string   "code_climate_repo_id"
+    t.decimal  "code_climate_gpa_current",                   :precision => 8, :scale => 2
+    t.decimal  "code_climate_gpa_previous",                  :precision => 8, :scale => 2
   end
 
   add_index "projects", ["aggregate_project_id"], :name => "index_projects_on_aggregate_project_id"

@@ -40,7 +40,7 @@ class Project < ActiveRecord::Base
     :code, :name, :enabled, :polling_interval, :type, :tag_list, :online, :building,
     :auth_password, :auth_username, :tracker_auth_token, :tracker_project_id, :tracker_online,
     :webhooks_enabled, :notification_email, :send_error_notifications, :send_build_notifications,
-    :verify_ssl
+    :verify_ssl, :code_climate_api_token, :code_climate_repo_id
 
   def self.project_specific_attributes
     columns.map(&:name).grep(/#{project_attribute_prefix}_/)
@@ -144,6 +144,15 @@ class Project < ActiveRecord::Base
   def tracker_project?
     tracker_project_id.present? && tracker_auth_token.present?
   end
+
+  def code_climate_project?
+    code_climate_api_token.present? && code_climate_repo_id.present?
+  end
+
+  def gpa_change_from_previous
+    code_climate_current_gpa - code_climate_previous_gpa rescue nil
+  end
+
 
   def payload
     raise NotImplementedError, "Must implement payload in subclasses"

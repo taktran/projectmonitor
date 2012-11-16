@@ -15,6 +15,8 @@ feature "projects", :js => true do
     fill_in "Name", :with => "Project Monitor"
     fill_in "Tracker project id", :with => "123"
     fill_in "Tracker auth token", :with => "abc"
+    fill_in "project_code_climate_repo_id", with: "1234"
+    fill_in "project_code_climate_api_token", with: "4321"
 
     click_button "Create"
 
@@ -39,6 +41,8 @@ feature "projects", :js => true do
 
     fill_in "Github Account", :with => new_account
     fill_in "Repository", :with => new_project
+    fill_in "project_code_climate_repo_id", with: "6789"
+    fill_in "project_code_climate_api_token", with: "9876"
 
     click_button "Update"
 

@@ -3,6 +3,7 @@ module StatusFetcher
     def perform
       retrieve_status
       retrieve_velocity
+      retrieve_code_climate_status
 
       project.set_next_poll
       project.save!
@@ -16,6 +17,10 @@ module StatusFetcher
 
     def retrieve_velocity
       StatusFetcher.retrieve_velocity_for(project)
+    end
+
+    def retrieve_code_climate_status
+      StatusFetcher.retrieve_code_climate_status_for(project)
     end
   end
 
@@ -39,6 +44,14 @@ module StatusFetcher
       project.tracker_online = true
     rescue RestClient::Exception
       project.tracker_online = false
+    end
+
+    def retrieve_code_climate_status_for(project)
+      return unless project.code_climate_project?
+
+      code_climate_api = CodeClimateApi.new(project)
+      project.code_climate_gpa_current = code_climate_api.current_gpa
+      project.code_climate_gpa_previous = code_climate_api.previous_gpa
     end
   end
 end

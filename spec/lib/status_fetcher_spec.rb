@@ -45,6 +45,37 @@ describe StatusFetcher do
     end
   end
 
+  describe "#retrieve_code_climate_status_for" do
+    context "when the project is a code_climate_project?" do
+      let(:project) { FactoryGirl.create :project, code_climate_api_token: '1234', code_climate_repo_id: '4321' }
+      let(:code_climate_api) { double :code_climate_api, current_gpa: 3.2, previous_gpa: 3.4 }
+
+      before do
+        CodeClimateApi.stub(:new).and_return code_climate_api
+      end
+
+      it "should set the current_gpa on the project" do
+        StatusFetcher.retrieve_code_climate_status_for(project)
+        project.code_climate_gpa_current.should == 3.2
+      end
+
+      it "should set the previous_gpa on the project" do
+        StatusFetcher.retrieve_code_climate_status_for(project)
+        project.code_climate_gpa_previous.should == 3.4
+      end
+    end
+
+    context "when the project is not a code_climate_project?" do
+      let(:project) { FactoryGirl.create :project }
+
+      it "should do nothing" do
+        project.should_not_receive :current_velocity=
+        project.should_not_receive :last_ten_velocities=
+        StatusFetcher.retrieve_code_climate_status_for(project)
+      end
+    end
+  end
+
   describe "#retrieve_velocity_for" do
     context "when the project is a tracker_project?" do
       let(:project) { FactoryGirl.create :project, current_velocity: 5, tracker_project_id: 1, tracker_auth_token: "token" }
