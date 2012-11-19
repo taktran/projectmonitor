@@ -7,6 +7,7 @@ describe StatusFetcher::Job do
     it "retrieves statuses from the StatusFetcher" do
       StatusFetcher.should_receive(:retrieve_status_for).with project
       StatusFetcher.should_receive(:retrieve_velocity_for).with project
+      StatusFetcher.should_receive(:retrieve_code_climate_status_for).with project
       project.should_receive(:set_next_poll)
       project.should_receive(:save!)
 
